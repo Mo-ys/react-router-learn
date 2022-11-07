@@ -11,6 +11,9 @@ import Wraper from './pages/demo2/wraper'
 import List from './pages/demo2/list'
 import Detail from './pages/demo2/detail'
 import CacheRoute from './components/cacheRoute'
+import { Switch, Link } from 'react-router-dom'
+import Demo3_A from './pages/demo3/demo3_A'
+import Demo3_B from './pages/demo3/demo3_B'
 import './App.css'
 
 const history = createBrowserHistory()
@@ -45,11 +48,24 @@ function App() {
   return (
     <div className="App">
       <Router history={history}>
-        <Route path="/dish-detail" component={getCompAsync(() => import('./pages/dishDetail'))} />
+        <Link to="/a">a</Link><br></br>
+        <Link to="/b">b</Link>
+        {/* 
+          Switch 对于同一个组件渲染不会进入销毁和重新挂载而是走更新渲染，没有使用Switch组件的则是会销毁没有匹配到的那组件
+          源码内部使用React.Children.forEach()处理，不使用React.Children.toArray()，这样就不会给组件添加key
+          可以手动给Route加key处理
+          Swith 组件应该 直接包含Route组件，否则自己处理属性传值问题（看源码）
+        */}
+        {/* <Switch> */}
+          <Route path="/a" component={Demo3_A}></Route>
+          <Route path="/b" component={Demo3_A}></Route>
+        {/* </Switch> */}
+
+        {/* <Route path="/dish-detail" component={getCompAsync(() => import('./pages/dishDetail'))} /> */}
         {/* <Route path="/poi-detail" component={PoiDetail} /> */}
-        <Route path="/poi-detail" component={LazyComp(React.lazy(() => import('./pages/poiDetail')))} />
+        {/* <Route path="/poi-detail" component={LazyComp(React.lazy(() => import('./pages/poiDetail')))} />
         <Route path="/poi-list" component={PoiList} />
-        <Route path="/(\d+)([a-z])" component={NumTest} />
+        <Route path="/(\d+)([a-z])" component={NumTest} /> */}
         {/* /111a  ==> match.params={0: 111, 1: a} */}
         {/* 
           使用render方式渲染，可以自定义传入组件的props
@@ -71,12 +87,12 @@ function App() {
 
           return <Demo1 match={match}/>
         }} /> */}
-        <Route path="/demo1">
-          {/* 
+        {/* 
             使用children渲染将会在route渲染时渲染children返回的组件
             不管有没有有没有指定path
             需要自行处理渲染逻辑
           */}
+        {/* <Route path="/demo1">
           {({ match, history, location }) => {
             console.log("match", match);
             console.log("history", history);
@@ -86,14 +102,14 @@ function App() {
             }
             return <Demo1></Demo1>
           }}
-        </Route>
+        </Route> */}
         {/* 
           在children渲染下的嵌套路由的pathless route渲染
           条件路径没有匹配到父级路由，子级是一个没有指定path的子路由
           一般没有指定path会默认渲染
           但是嵌套路由的子级路由的match会继承父级路由的match，此时父级的match===null，就会使子级不会渲染
         */}
-        <Route path="/pathless">
+        {/* <Route path="/pathless">
           {() => {
             return (
               <Route render={(props) => {
@@ -103,14 +119,14 @@ function App() {
               }}></Route>
             )
           }}
-        </Route>
+        </Route> */}
         {/* 
           exact: path完全匹配，path="/a" ,pathname="/a/"可匹配
           strict: 严格按照path最后的分隔符匹配，path="/a" ,pathname="/a/"|"/a"可匹配,path="/a/"，只匹配pathname="/a/"
           sensitive: 区分大小写
           exact&strict：必须完全一样，path="/a" pathname="/a/"不匹配
         */}
-        <Route path="/a" strict exact component={Demo1}></Route>
+        {/* <Route path="/a" strict exact component={Demo1}></Route>
         <Route path="/demo2" component={Demo2}></Route>
         <IndexRedirectRoute
           indexRedirect="/list"
@@ -119,7 +135,7 @@ function App() {
         >
           <Route path={`/demo2-redirect/list`} component={List}></Route>
           <CacheRoute path={`/demo2-redirect/detail/:id`} component={Detail}></CacheRoute>
-        </IndexRedirectRoute>
+        </IndexRedirectRoute> */}
       </Router>
     </div>
   );
