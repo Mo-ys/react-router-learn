@@ -11,12 +11,17 @@ import Wraper from './pages/demo2/wraper'
 import List from './pages/demo2/list'
 import Detail from './pages/demo2/detail'
 import CacheRoute from './components/cacheRoute'
-import { Switch, Link } from 'react-router-dom'
+import { Switch, Link, Redirect, Prompt } from 'react-router-dom'
 import Demo3_A from './pages/demo3/demo3_A'
 import Demo3_B from './pages/demo3/demo3_B'
 import './App.css'
 
-const history = createBrowserHistory()
+const history = createBrowserHistory({
+  getUserConfirmation: (message, callBack) => {
+    callBack(true) // 允许跳转
+    callBack(false) // 禁止跳转
+  }
+})
 
 function getCompAsync(loader: any) {
   return (props: any) => {
@@ -56,10 +61,15 @@ function App() {
           可以手动给Route加key处理
           Swith 组件应该 直接包含Route组件，否则自己处理属性传值问题（看源码）
         */}
-        {/* <Switch> */}
+        <Switch>
           <Route path="/a" component={Demo3_A}></Route>
           <Route path="/b" component={Demo3_A}></Route>
-        {/* </Switch> */}
+        </Switch>
+
+        {/* <Switch>
+          <Redirect from="/" exact strict to="/a"></Redirect>
+          <Route path="/a" component={Demo3_A} />
+        </Switch> */}
 
         {/* <Route path="/dish-detail" component={getCompAsync(() => import('./pages/dishDetail'))} /> */}
         {/* <Route path="/poi-detail" component={PoiDetail} /> */}
