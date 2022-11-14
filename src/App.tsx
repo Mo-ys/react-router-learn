@@ -11,9 +11,10 @@ import Wraper from './pages/demo2/wraper'
 import List from './pages/demo2/list'
 import Detail from './pages/demo2/detail'
 import CacheRoute from './components/cacheRoute'
-import { Switch, Link, Redirect, Prompt } from 'react-router-dom'
+import { Switch, Link, Redirect, Prompt, useLocation } from 'react-router-dom'
 import Demo3_A from './pages/demo3/demo3_A'
 import Demo3_B from './pages/demo3/demo3_B'
+import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import './App.css'
 
 const history = createBrowserHistory({
@@ -50,6 +51,8 @@ function App() {
     console.log("app render===");
 
   })
+
+
   return (
     <div className="App">
       <Router history={history}>
@@ -61,10 +64,8 @@ function App() {
           可以手动给Route加key处理
           Swith 组件应该 直接包含Route组件，否则自己处理属性传值问题（看源码）
         */}
-        <Switch>
-          <Route path="/a" component={Demo3_A}></Route>
-          <Route path="/b" component={Demo3_A}></Route>
-        </Switch>
+        <TransitionRoute></TransitionRoute>
+
 
         {/* <Switch>
           <Redirect from="/" exact strict to="/a"></Redirect>
@@ -149,6 +150,57 @@ function App() {
       </Router>
     </div>
   );
+}
+
+
+function TransitionRoute() {
+  const location = useLocation()
+  return (
+    // <TransitionGroup>
+    //   <CSSTransition
+    //     key={location.key}
+    //     timeout={500}
+    //     classNames="fade"
+    //   >
+    //     <Switch location={location}>
+    //       <Route path="/a" component={Demo3_A}></Route>
+    //       <Route path="/b" component={Demo3_A}></Route>
+    //     </Switch>
+    //   </CSSTransition>
+    // </TransitionGroup>
+
+    // < location={location}>
+    <>
+      <Route path="/a" component={Demo3_A}>
+        {({match}) => {
+          return (
+            <CSSTransition
+              in={!!match}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <Demo3_A></Demo3_A>
+            </CSSTransition>
+          )
+        }}
+      </Route>
+      <Route path="/b">
+      {({match}) => {
+          return (
+            <CSSTransition
+              in={!!match}
+              timeout={500}
+              classNames="fade"
+              unmountOnExit
+            >
+              <Demo3_B></Demo3_B>
+            </CSSTransition>
+          )
+        }}
+      </Route>
+    </>
+  )
 }
 
 export default App;
